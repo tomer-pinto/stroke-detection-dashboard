@@ -83,7 +83,6 @@ To run this dashboard locally, please follow these steps:
 * **Tomer Pinto:** [LinkedIn](https://www.linkedin.com/in/tomerpinto/) | [GitHub](https://github.com/tomer-pinto)
 * **Tomer Amon:** [LinkedIn](https://www.linkedin.com/in/tomer-amon-9aa996256/)
 
----
 ## License
 Copyright (c) 2025 Tomer Pinto & Tomer Amon. All Rights Reserved.
 

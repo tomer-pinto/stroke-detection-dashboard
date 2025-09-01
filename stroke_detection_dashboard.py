@@ -11,6 +11,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import base64
+import time
 from PIL import Image
 from sklearn.metrics import confusion_matrix, roc_curve, auc, precision_recall_curve, average_precision_score, precision_score, recall_score, f1_score
 
@@ -273,7 +274,15 @@ if not st.session_state.loader_shown:
     except FileNotFoundError:
         loader_placeholder.text("Loading Stroke Detection Dashboard...")
 
+    start_time = time.time()
+    
     app_assets = load_app_data()
+
+    elapsed_time = time.time() - start_time
+    minimum_display_time = 3
+
+    if elapsed_time < minimum_display_time:
+        time.sleep(minimum_display_time - elapsed_time)
 
     loader_placeholder.empty()
     st.session_state.loader_shown = True
