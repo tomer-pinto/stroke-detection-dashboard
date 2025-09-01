@@ -1,0 +1,11 @@
+{
+  "model_scores": {
+    "ResNet50V2": 0.9088,
+    "ConvNeXtTiny": 0.8275,
+    "MobileNetV2": 0.8205
+  },
+  "thresholds": {
+    "Ensemble": 0.5657,
+    "Single Best": 0.6061
+  }
+}
