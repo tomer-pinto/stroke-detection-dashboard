@@ -250,12 +250,12 @@ if not st.session_state.loader_shown:
                 z-index: 9999;
             }}
             .loader-container img {{
-                width: 400px;
+                width: 300px;
                 animation: pulse 1.5s infinite ease-in-out;
                 border-radius: 10px;
             }}
             .loader-text {{
-                margin-top: 20px; font-size: 1.3em; color: white;
+                margin-top: 20px; font-size: 1.1em; color: white;
                 text-align: center; font-family: sans-serif;
             }}
             @keyframes pulse {{
