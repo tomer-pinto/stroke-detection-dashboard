@@ -10,15 +10,16 @@ import json
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import base64
 import time
 from PIL import Image
 from sklearn.metrics import confusion_matrix, roc_curve, auc, precision_recall_curve, average_precision_score, precision_score, recall_score, f1_score
 
+LOGO = "https://i.postimg.cc/kXbvWYpH/logo.png"
+
 # --- Page Configuration ---
 st.set_page_config(
     page_title="Stroke Detection Dashboard",
-    page_icon="images/logo.png",
+    page_icon=LOGO,
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -171,12 +172,6 @@ def show_emergency_dialog():
         """,
         unsafe_allow_html=True
     )
-    
-def image_to_base64(path):
-    """Converts a local image file to a Base64 string for embedding in HTML."""
-    with open(path, "rb") as f:
-        data = f.read()
-    return base64.b64encode(data).decode()
 
 ##################################################################################################################################################################################################################################################################################################################################################################################################
 
@@ -237,42 +232,38 @@ if "loader_shown" not in st.session_state:
 loader_placeholder = st.empty()
 
 if not st.session_state.loader_shown:
-    try:
-        logo_base64 = image_to_base64("images/logo.png")
-        loader_html = f"""
-        <style>
-            .loader-container {{
-                position: fixed; top: 0; left: 0;
-                width: 100%; height: 100%;
-                background-color: #121212;
-                display: flex; flex-direction: column;
-                align-items: center; justify-content: center;
-                z-index: 9999;
-            }}
-            .loader-container img {{
-                width: 300px;
-                animation: pulse 1.5s infinite ease-in-out;
-                border-radius: 10px;
-            }}
-            .loader-text {{
-                margin-top: 20px; font-size: 1.1em; color: white;
-                text-align: center; font-family: sans-serif;
-            }}
-            @keyframes pulse {{
-                0% {{ transform: scale(1); }}
-                50% {{ transform: scale(1.05); }}
-                100% {{ transform: scale(1); }}
-            }}
-        </style>
+    loader_html = f"""
+    <style>
+        .loader-container {{
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: #121212;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            z-index: 9999;
+        }}
+        .loader-container img {{
+            width: 300px;
+            animation: pulse 1.5s infinite ease-in-out;
+            border-radius: 10px;
+        }}
+        .loader-text {{
+            margin-top: 20px; font-size: 1.1em; color: white;
+            text-align: center; font-family: sans-serif;
+        }}
+        @keyframes pulse {{
+            0% {{ transform: scale(1); }}
+            50% {{ transform: scale(1.05); }}
+            100% {{ transform: scale(1); }}
+        }}
+    </style>
 
-        <div class="loader-container" id="loader">
-            <img src="data:image/png;base64,{logo_base64}">
-            <div class="loader-text">Loading Stroke Detection Dashboard...</div>
-        </div>
-        """
-        loader_placeholder.markdown(loader_html, unsafe_allow_html=True)
-    except FileNotFoundError:
-        loader_placeholder.text("Loading Stroke Detection Dashboard...")
+    <div class="loader-container" id="loader">
+        <img src="{LOGO}">
+        <div class="loader-text">Loading Stroke Detection Dashboard...</div>
+    </div>
+    """
+    loader_placeholder.markdown(loader_html, unsafe_allow_html=True)
 
     start_time = time.time()
     
@@ -367,10 +358,10 @@ if app_assets:
                             else: 
                                 st.success(f"**Prediction:** {prediction} ✅")
 
-                            st.metric(label="Model Confidence Score", value=f"{score:.4f}")
+                            st.metric(label="Model Confidence Score", value=f"{score*100:.2f}%")
                             threshold = app_assets['config']['thresholds'][model_selection]
                             st.progress(float(min(score / (threshold * 1.5), 1.0)))
-                            st.caption(f"A score above {threshold:.4f} is classified as 'Suspected Stroke'.")
+                            st.caption(f"A score above {threshold*100:.2f}% is classified as 'Suspected Stroke'.")
                     
                     st.button("Analyze Another Image", on_click=set_view, args=('menu',), use_container_width=True)
 
@@ -399,7 +390,7 @@ if app_assets:
             kpi_col1, kpi_col2, kpi_col3, kpi_col4 = st.columns(4)
             kpi_col1.metric("Recall (Stroke)", "67%", help="Percentage of actual strokes correctly identified.")
             kpi_col2.metric("Precision (Stroke)", "86%", help="Of all 'stroke' predictions, this percentage was correct.")
-            kpi_col3.metric("F1-Score (Stroke)", "0.75", help="A balance between precision and recall.")
+            kpi_col3.metric("F1-Score (Stroke)", "75%", help="A balance between precision and recall.")
             kpi_col4.metric("Overall Accuracy", "88%", help="The percentage of all predictions that the model got correct.")
             
             st.markdown("---")
@@ -550,7 +541,7 @@ if app_assets:
                     f1 = f1_score(y_true, y_pred_interactive, pos_label=1)
                     st.metric("Recall (Stroke)", f"{recall:.0%}")
                     st.metric("Precision (Stroke)", f"{precision:.0%}")
-                    st.metric("F1-Score (Stroke)", f"{f1:.2f}")
+                    st.metric("F1-Score (Stroke)", f"{f1:.0%}")
 
                 with cm_col:
                     cm_interactive = confusion_matrix(y_true, y_pred_interactive, labels=[0, 1])
@@ -614,12 +605,8 @@ if app_assets:
 
     #--- TAB 4: CONTACT US ---
     with tab4:
-        try:
-            b64_img1 = image_to_base64("images/tomer_pinto_profile.jpg")
-            b64_img2 = image_to_base64("images/tomer_amon_profile.jpg")
-        except FileNotFoundError:
-            st.error("Error: Make sure 'tomer_pinto_profile.jpg' and 'tomer_amon_profile.jpg' are in the project/images folder.")
-            b64_img1 = b64_img2 = ""
+        pinto_img_url = "https://i.postimg.cc/W3YwwBVB/tomer-pinto-profile.jpg"
+        amon_img_url = "https://i.postimg.cc/QCRgRcHS/tomer-amon-profile.jpg"
 
         page_html = f"""
         <style>
@@ -699,7 +686,7 @@ if app_assets:
         <p>If you have any questions, feedback, or inquiries about this project, please feel free to reach out to us:</p>
         <div class="contact-container">
             <div class="card">
-                <img src="data:image/jpeg;base64,{b64_img1}" alt="" class="profile-pic">
+                <img src="{pinto_img_url}" alt="" class="profile-pic">
                 <h3>Tomer Pinto</h3>
                 <div class="buttons">
                     <a href="https://www.linkedin.com/in/tomerpinto/" target="_blank" class="btn linkedin">
@@ -711,7 +698,7 @@ if app_assets:
                 </div>
             </div>
             <div class="card">
-                <img src="data:image/jpeg;base64,{b64_img2}" alt="" class="profile-pic">
+                <img src="{amon_img_url}" alt="" class="profile-pic">
                 <h3>Tomer Amon</h3>
                 <div class="buttons">
                     <a href="https://www.linkedin.com/in/tomer-amon-9aa996256/" target="_blank" class="btn linkedin">
